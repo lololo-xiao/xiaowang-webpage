@@ -1,0 +1,19 @@
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# OS/editor junk
+.DS_Store
+*.log
+
+# Build artifacts
+dist/
+node_modules/
