@@ -6,6 +6,16 @@ export const metadata: Metadata = {
   title: "Xiao Wang",
   description: "Xiao Wang — NLP & AI builder. Personal site and work log.",
   metadataBase: new URL("https://xiaowang.lol"),
+  icons: {
+    icon: [
+        // Using an array to provide multiple sizes
+        { url: '/favicon.ico', sizes: 'any', rel: 'icon' },
+        { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+        { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+    ],
+    // Icon for Apple devices (iPhones, iPads)
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: "Xiao Wang — NLP & AI builder",
     description: "Projects, writing, and a living work log.",
