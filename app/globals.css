@@ -2,18 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
 :root {
-  --bg: white;
-  --fg: #0a0a0a;
+  --bg: #f5f3ef;
+  --fg: #111;
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
+
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   height: 100%;
+  margin: 0;
 }
+
 body {
   color: var(--fg);
   background: var(--bg);
+  font-family: 'EB Garamond', 'Georgia', serif;
+  -webkit-font-smoothing: antialiased;
 }
-.prose a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+
+/* paper grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--grain);
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ink link style */
+a {
+  color: var(--fg);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+a:hover {
+  opacity: 0.5;
+}
+
+/* hand-drawn underline on hover for nav items */
+.nav-item {
+  position: relative;
+  cursor: pointer;
+}
+.nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 1.5px;
+  background: var(--fg);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* section reveal animation */
+.section-content {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ink blob hover effect on icons */
+.ink-icon {
+  transition: transform 0.3s ease;
+}
+.ink-icon:hover {
+  transform: scale(1.08);
+}
+
+/* custom scrollbar — thin, ink-colored */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 2px;
+}
+
+/* selection color */
+::selection {
+  background: #111;
+  color: #f5f3ef;
 }

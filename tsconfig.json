@@ -18,9 +18,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "types": [
-      "mdx"
-    ],
+    "types": [],
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -37,7 +35,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.mdx",
     ".next/types/**/*.ts"
   ],
   "exclude": [
