@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://xiaowang.lol"),
   icons: {
     icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
       { url: '/favicon.ico', sizes: 'any', rel: 'icon' },
       { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
       { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
