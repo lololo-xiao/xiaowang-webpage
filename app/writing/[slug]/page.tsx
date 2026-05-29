@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { posts, postContent } from '@/lib/posts'
+import { posts, postContent, postHeadings } from '@/lib/posts'
+import PostToc from '@/app/components/PostToc'
 
 export function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
@@ -11,9 +12,11 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   if (!post) notFound()
 
   const content = postContent[post.slug]
+  const headings = postHeadings[post.slug]
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 py-24">
+      {headings && headings.length > 0 && <PostToc headings={headings} />}
       <article className="max-w-md w-full">
         {/* back link */}
         <Link
@@ -31,8 +34,20 @@ export default function PostPage({ params }: { params: { slug: string } }) {
           <circle cx="22" cy="10" r="2" fill="#111" />
         </svg>
 
+        {/* label */}
+        {post.label && (
+          <span className="inline-block text-[10px] tracking-[0.25em] uppercase opacity-50 border border-black/20 rounded-full px-3 py-1 mb-5">
+            {post.label}
+          </span>
+        )}
+
         {/* title */}
-        <h1 className="text-2xl tracking-wide mb-3">{post.title}</h1>
+        <h1 className="text-2xl tracking-wide mb-2">{post.title}</h1>
+
+        {/* subtitle */}
+        {post.subtitle && (
+          <p className="text-sm italic tracking-wide opacity-50 mb-3">{post.subtitle}</p>
+        )}
 
         {/* date */}
         <p className="text-xs tracking-[0.25em] opacity-40 mb-10">{post.date}</p>
