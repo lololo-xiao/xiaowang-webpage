@@ -16,8 +16,8 @@ export default function Page() {
 
         {/* nav items — vertical, icon + label */}
         <nav className="flex flex-col items-center gap-14">
-          {/* projects */}
-          <a href="#projects" className="nav-item flex flex-col items-center gap-3">
+          {/* explorations */}
+          <a href="#explorations" className="nav-item flex flex-col items-center gap-3">
             <svg className="ink-icon" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
               {/* isometric cube */}
               <path d="M22 8 L36 16 L36 30 L22 38 L8 30 L8 16 Z" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -25,20 +25,30 @@ export default function Page() {
               <path d="M22 22 L36 16" stroke="#111" strokeWidth="1" strokeLinecap="round" />
               <path d="M22 22 L8 16" stroke="#111" strokeWidth="1" strokeLinecap="round" />
             </svg>
-            <span className="text-sm tracking-[0.2em] lowercase">projects</span>
+            <span className="text-sm tracking-[0.2em] lowercase">explorations</span>
           </a>
 
           <div className="w-px h-10 bg-black/20" />
 
           {/* writing */}
           <a href="#writing" className="nav-item flex flex-col items-center gap-3">
-            <svg className="ink-icon" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* fountain pen nib */}
-              <path d="M22 36 L12 16 L22 10 L32 16 Z" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M22 36 L22 22" stroke="#111" strokeWidth="1" strokeLinecap="round" />
-              <path d="M15 19 L22 36 L29 19" stroke="#111" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="22" cy="10" r="2" fill="#111" />
-            </svg>
+            <span className="relative">
+              <svg className="ink-icon" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* fountain pen nib */}
+                <path d="M22 36 L12 16 L22 10 L32 16 Z" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M22 36 L22 22" stroke="#111" strokeWidth="1" strokeLinecap="round" />
+                <path d="M15 19 L22 36 L29 19" stroke="#111" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="22" cy="10" r="2" fill="#111" />
+              </svg>
+              {posts.length > 0 && (
+                <span
+                  aria-label={`${posts.length} posts`}
+                  className="absolute -top-2.5 -right-2.5 flex items-center justify-center min-w-[24px] h-[24px] px-1.5 rounded-full bg-[#ff2d2d] text-white text-xs font-bold leading-none ring-2 ring-white shadow-[0_2px_8px_rgba(255,45,45,0.55)]"
+                >
+                  {posts.length}
+                </span>
+              )}
+            </span>
             <span className="text-sm tracking-[0.2em] lowercase">writing</span>
           </a>
 
@@ -64,8 +74,8 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ── projects section ── */}
-      <section id="projects" className="min-h-screen flex items-center justify-center px-6">
+      {/* ── explorations section ── */}
+      <section id="explorations" className="min-h-screen flex items-center justify-center px-6">
         <div className="max-w-md section-content text-center">
           <svg className="mx-auto mb-8 opacity-40" width="28" height="28" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M22 8 L36 16 L36 30 L22 38 L8 30 L8 16 Z" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -74,7 +84,7 @@ export default function Page() {
             <path d="M22 22 L8 16" stroke="#111" strokeWidth="1" strokeLinecap="round" />
           </svg>
 
-          <h2 className="text-2xl mb-8 tracking-wide">projects</h2>
+          <h2 className="text-2xl mb-8 tracking-wide">explorations</h2>
 
           <div className="space-y-5 text-base leading-relaxed opacity-50">
             <p>coming soon — actively building.</p>
@@ -135,9 +145,17 @@ export default function Page() {
 
           <h2 className="text-2xl mb-8 tracking-wide">contact</h2>
 
+          {/* profile photo — hand-drawn avatar in a cute comic square frame */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/me.png"
+            alt="Xiao Wang"
+            className="mx-auto mb-8 w-40 h-40 rounded-xl object-cover border border-black/20 bg-white"
+          />
+
           <div className="space-y-5 text-base leading-relaxed opacity-80">
             <p>
-              Reach me by email or find me on the platforms above.
+              Reach me by email or find me on the platforms below.
             </p>
             <p className="text-lg">
               <a href="mailto:wangxiao02131@gmail.com" className="nav-item border-b border-black/30 pb-0.5">

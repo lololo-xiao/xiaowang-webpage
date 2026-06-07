@@ -16,6 +16,13 @@ export type Heading = {
 
 export const posts: Post[] = [
   {
+    slug: 'do-u-need-agentic-systems',
+    title: 'Do U Need Agentic Systems?',
+    subtitle: 'agent learning 02',
+    label: 'agent learning',
+    date: '2026-06-07',
+  },
+  {
     slug: 'tell-me-the-time',
     title: 'Tell me the time: A Minimal Agent Loop',
     subtitle: 'agent learning 01',
@@ -26,6 +33,14 @@ export const posts: Post[] = [
 
 // table-of-contents entries — keep ids in sync with the h2 ids below
 export const postHeadings: Record<string, Heading[]> = {
+  'do-u-need-agentic-systems': [
+    { id: 'preface', text: '0. Preface' },
+    { id: 'agentic-system', text: '1. Agentic System' },
+    { id: 'design-patterns', text: '2. Design Patterns' },
+    { id: 'some-thoughts', text: '3. Some Thoughts' },
+    { id: 'disclaimer', text: 'Disclaimer' },
+    { id: 'references', text: 'References' },
+  ],
   'tell-me-the-time': [
     { id: 'preface', text: '0. Preface' },
     { id: 'llms-dont-know-time', text: "1. LLMs don't know the time" },
@@ -94,6 +109,7 @@ if step >= max_steps:
 
 // shared styles to keep the minimal e-ink feel
 const h2 = 'scroll-mt-24 text-xl font-bold tracking-wide pt-8 pb-1 text-black border-b border-black/10'
+const h3 = 'text-base font-bold tracking-wide pt-5 pb-1 text-black'
 const ic = 'text-[0.85em] bg-black/5 px-1 py-0.5 rounded'
 
 function Figure({ src, alt, caption }: { src: string; alt: string; caption: string }) {
@@ -106,7 +122,203 @@ function Figure({ src, alt, caption }: { src: string; alt: string; caption: stri
   )
 }
 
+function Callout({ children }: { children: React.ReactNode }) {
+  return (
+    <blockquote className="my-6 border-l-2 border-black/30 bg-black/5 px-4 py-3 text-sm italic tracking-wide">
+      {children}
+    </blockquote>
+  )
+}
+
 export const postContent: Record<string, React.ReactNode> = {
+  'do-u-need-agentic-systems': (
+    <>
+      <Callout>
+        &ldquo;Entities should not be multiplied beyond necessity.&rdquo; — Occam&apos;s Razor
+      </Callout>
+
+      <h2 id="preface" className={h2}>0. Preface</h2>
+      <p>
+        My second blog, yeahhh! And this one is about my learning in the{' '}
+        <a className="border-b border-black/30" href="https://github.com/datawhalechina/Agent-Learning-Hub" target="_blank" rel="noopener noreferrer">
+          Agent-Learning-Hub
+        </a>{' '}
+        stage 0. After reading the two listed resources ({' '}
+        <a className="border-b border-black/30" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">
+          Anthropic: Building effective agents
+        </a>
+        ,{' '}
+        <a className="border-b border-black/30" href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/" target="_blank" rel="noopener noreferrer">
+          OpenAI: A practical guide to building agents
+        </a>
+        ), the most important lesson I learned is the principle of designing agentic systems: start from the
+        simplest solution. The tradeoff for agentic systems is all about latency + cost vs. performance. I will
+        showcase how to design agentic systems from a high level, the common design patterns, and some
+        reflection about my work during the internship at Meituan.
+      </p>
+
+      <h2 id="agentic-system" className={h2}>1. Agentic System</h2>
+      <h3 className={h3}>Definition</h3>
+      <p>
+        Before asking whether we should build agentic systems, we should first have a clear understanding of
+        what they are. So, what are they?
+      </p>
+      <p>
+        There are 2 types of agentic systems: workflows and agents (referencing the definition in Claude&apos;s
+        blog). Both of them have a necessity for using LLMs, but this condition alone is not sufficient for an
+        agentic system. Usually, they use the augmented LLM as the building block. The building block is
+        equipped with tools, memory, and retrieval modules, which enable the LLM to output more accurate
+        answers. For workflows, they are built with the blocks but with some predefined logic. Agents are more
+        flexible — they can finish their task autonomously by decomposing it into clear sub-tasks and executing
+        them with the tools and necessary human feedback.
+      </p>
+      <h3 className={h3}>When</h3>
+      <p>
+        The augmented LLM is the building block of the system. The strength of the augmented LLM compared to
+        conventional software is about understanding and analyzing large, unstructured data, and doing complex
+        reasoning. When your system can function well and doesn&apos;t need any of these features, you may want
+        to think twice before migrating just to chase the trends in tech.
+      </p>
+      <p>
+        If you do find that your product can benefit from those functions, that&apos;s great. But we should
+        start small — not even with the agentic system, but first with a single augmented LLM. Sometimes RAG or
+        prompt engineering techniques will meet your goal. If it doesn&apos;t work, then we should think about
+        designing the agentic system. And I would summarize all the common patterns mentioned in the 2 blogs.
+      </p>
+
+      <h2 id="design-patterns" className={h2}>2. Design Patterns</h2>
+      <h3 className={h3}>Workflows</h3>
+      <p>
+        All these patterns are not strictly defined like math equations, but you can use them as a guide map,
+        and the details should be implemented accordingly. I categorize them into 2 basic types: prompt
+        chaining and cooperation.
+      </p>
+      <p>
+        Prompt chaining is the naive one when we talk about workflows. In the workflow, each node is an LLM
+        call, and one call follows another one&apos;s result. That&apos;s really simple. And that&apos;s the
+        starting point for us to design the happy path.
+      </p>
+      <Figure
+        src="/blog/do-u-need-agentic-systems/01-prompt-chaining.png"
+        alt="Prompt chaining workflow: each LLM call feeds the next"
+        caption="Prompt chaining — each LLM call feeds the next"
+      />
+      <p>
+        Cooperation includes many variations (I may oversimplify here): routing, parallelization,
+        orchestrator-workers, and evaluator-optimizer… They are more sophisticated than prompt chaining. There
+        is more than 1 way of chaining, and some calls may even chain their states back.
+      </p>
+      <p>
+        Routing suits tasks that can be classified into different categories, where each category can be handled
+        with our building block: the augmented LLM.
+      </p>
+      <Figure
+        src="/blog/do-u-need-agentic-systems/02-routing.png"
+        alt="Routing workflow: a router directs input to a specialized handler"
+        caption="Routing — classify the input, then dispatch to a specialized handler"
+      />
+      <p>
+        There are 2 typical scenarios suited for parallelization. One case is that you can decompose the task
+        into several independent subtasks. The other case is that your task can benefit from running multiple
+        LLM calls, which increases the sample space for the output.
+      </p>
+      <Figure
+        src="/blog/do-u-need-agentic-systems/03-parallelization.png"
+        alt="Parallelization workflow: independent LLM calls run in parallel and are aggregated"
+        caption="Parallelization — run independent calls in parallel, then aggregate"
+      />
+      <p>
+        Orchestrator-workers is similar to parallelization, except your subtasks are not predefined but decided
+        by the orchestrator, and you should synthesize the output of all the LLM calls to get the answer you
+        need.
+      </p>
+      <Figure
+        src="/blog/do-u-need-agentic-systems/04-orchestrator-workers.png"
+        alt="Orchestrator-workers workflow: an orchestrator delegates dynamic subtasks to workers"
+        caption="Orchestrator-workers — the orchestrator delegates dynamic subtasks, then synthesizes"
+      />
+      <p>
+        The last one I introduce here is evaluator-optimizer, which uses an LLM call as a judge and provides
+        feedback for the generator block to generate more accurate answers.
+      </p>
+      <Figure
+        src="/blog/do-u-need-agentic-systems/05-evaluator-optimizer.png"
+        alt="Evaluator-optimizer workflow: a generator and an evaluator loop until the answer is good"
+        caption="Evaluator-optimizer — generate, judge, and refine in a loop"
+      />
+      <h3 className={h3}>Agents</h3>
+      <p>
+        Agents have more freedom compared to workflows. The essence of an agent is a <strong>while-loop</strong>.
+        The exit condition for the while-loop can be successfully completing the task, an error occurring, or
+        reaching the maximum number of loops the agent allows. In this loop, the agent (or LLM call) gathers
+        the right context using the tools or functions we provide for the system, and based on the task defined,
+        approaches it step by step.
+      </p>
+
+      <h2 id="some-thoughts" className={h2}>3. Some Thoughts</h2>
+      <p>
+        When I did my internship at Meituan, my task was about dealing with the bad cases that product teams
+        gathered from users&apos; real conversations. My internship was around the second half of 2024 (at that
+        time, agents were not quite popular yet). Our product was deployed on smart watches for children, and
+        we designed different characters in the app, backed by LLMs, as the chatbot. In this context, safety and
+        correctness are important. We don&apos;t want to teach knowledge that the LLM hallucinates, and we
+        don&apos;t want the LLM to give harmful instructions or discuss adult topics.
+      </p>
+      <p>
+        This was my first internship — not soo good. I only focused on the things that my tutor asked me to do,
+        and rarely had my own thoughts on the products or solutions. After reading these 2 blogs, I think I
+        would approach this in a better way, or at least try to discuss some of these methods first.
+      </p>
+      <p>
+        What I had done at that time was reading and replicating the methods about online-DPO in the{' '}
+        <a className="border-b border-black/30" href="https://arxiv.org/pdf/2405.07863" target="_blank" rel="noopener noreferrer">
+          paper
+        </a>
+        . I spent a huge amount of time learning to set up and build all the benchmarks just to replicate the
+        paper&apos;s results. (I think that was a bit out of focus.) In the 2nd month, I finally started to go
+        into the real product and questions. Still, I focused on implementing the methods, not on the real
+        things.
+      </p>
+      <p>
+        What made me start to reflect on this experience is the guardrails and philosophy mentioned in the
+        blogs. With some benchmarks set up, I think I would start with prompt engineering. If it doesn&apos;t
+        work, I would try to implement some guardrails, like calling some LLMs or training small models to
+        classify harmful content. The point is all about how to use the right tools to resolve real problems,
+        not just focusing on implementing some fancy techniques.
+      </p>
+
+      <h2 id="disclaimer" className={h2}>Disclaimer</h2>
+      <p>
+        The post is 100% written by myself. AI may just help me polish some sentences or correct grammar. All
+        references are cited here. The workflow diagrams are from Anthropic&apos;s &ldquo;Building effective
+        agents&rdquo; (reference 1).
+      </p>
+
+      <h2 id="references" className={h2}>References</h2>
+      <ol className="list-decimal pl-5 space-y-2">
+        <li>
+          <a className="border-b border-black/30" href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">
+            Anthropic — Building Effective Agents
+          </a>
+        </li>
+        <li>
+          <a className="border-b border-black/30" href="https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/" target="_blank" rel="noopener noreferrer">
+            OpenAI — A Practical Guide to Building Agents
+          </a>
+        </li>
+        <li>
+          <a className="border-b border-black/30" href="https://github.com/datawhalechina/Agent-Learning-Hub" target="_blank" rel="noopener noreferrer">
+            Agent-Learning-Hub — datawhalechina (GitHub)
+          </a>
+        </li>
+        <li>
+          <a className="border-b border-black/30" href="https://arxiv.org/abs/2405.07863" target="_blank" rel="noopener noreferrer">
+            RLHF Workflow: From Reward Modeling to Online RLHF (arXiv:2405.07863)
+          </a>
+        </li>
+      </ol>
+    </>
+  ),
   'tell-me-the-time': (
     <>
       <h2 id="preface" className={h2}>0. Preface (Nothing technical, feel free to jump)</h2>
